@@ -1,18 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:background="#ffffff">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <!-- 总体布局UI设计 -->
+    <!-- 内容（显示各种fragment页面） -->
+    <LinearLayout
+        android:id="@+id/main_fragment"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_alignParentBottom="true"
+        android:background="#F5F5F5"
+        android:gravity="center"
+        android:orientation="horizontal">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <RadioButton
+            android:id="@+id/rb_home"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_weight="1"
+            android:button="@null"
+            android:drawableTop="@drawable/bottom_home_normal"
+            android:gravity="center"
+            android:text="首页" />
+
+        <RadioButton
+            android:id="@+id/rb_history"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_weight="1"
+            android:button="@null"
+            android:drawableTop="@drawable/bottom_history_normal"
+            android:gravity="center"
+            android:text="历史记录" />
+
+        <RadioButton
+            android:id="@+id/rb_bookmark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_weight="1"
+            android:button="@null"
+            android:drawableTop="@drawable/bottom_bookmark_normal"
+            android:gravity="center"
+            android:text="书签" />
+
+    </LinearLayout>
+
+    <!-- 底部按钮 -->
+    <RelativeLayout
+        android:id="@+id/main_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/main_fragment">
+
+    </RelativeLayout>
+
+</RelativeLayout>
