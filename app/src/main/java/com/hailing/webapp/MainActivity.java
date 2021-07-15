@@ -16,9 +16,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
-import ui.main.BookmarkFragment;
-import ui.main.HistoryFragment;
-import ui.main.HomeFragment;
+import com.hailing.webapp.ui.main.BookmarkFragment;
+import com.hailing.webapp.ui.main.HistoryFragment;
+import com.hailing.webapp.ui.main.HomeFragment;
 
 // 加载主页布局，主页逻辑代码实现
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
