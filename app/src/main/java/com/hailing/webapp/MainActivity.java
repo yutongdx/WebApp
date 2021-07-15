@@ -16,6 +16,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
+import ui.main.BookmarkFragment;
+import ui.main.HistoryFragment;
+import ui.main.HomeFragment;
+
 // 加载主页布局，主页逻辑代码实现
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private String fragmentTag; // 碎片标签，用以实现3个Fragment之间的跳转
@@ -26,8 +30,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     // 新建主界面三个模块的碎片对象
     private Fragment homeFragment = new HomeFragment();
-    private Fragment historyFragment = new com.hailing.webapp.HistoryFragment();
-    private Fragment bookmarkFragment = new com.hailing.webapp.BookmarkFragment();
+    private Fragment historyFragment = new HistoryFragment();
+    private Fragment bookmarkFragment = new BookmarkFragment();
 
 
     // 添加碎片，初始化布局
