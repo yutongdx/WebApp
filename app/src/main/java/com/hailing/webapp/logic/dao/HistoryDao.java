@@ -13,21 +13,7 @@ import java.util.ArrayList;
 public class HistoryDao {
 
     SQLiteDatabase sqLiteDatabase;
-    DataBaseHelper dataBaseHelper;
-
-    public HistoryDao(Context context){
-        dataBaseHelper = new DataBaseHelper(context);
-    }
-
-    //连接数据库
-    public void getDataBaseConn(){
-        sqLiteDatabase=dataBaseHelper.getWritableDatabase();
-    }
-
-    //关闭数据库
-    public void releaseDataBase(){
-        sqLiteDatabase.close();
-    }
+    DataBaseHelper dbHelper;
 
     //查询所有
     public ArrayList<History> query(){
@@ -37,10 +23,6 @@ public class HistoryDao {
         Cursor cursor = sqLiteDatabase.rawQuery(sql,null);
         while(cursor.moveToNext()){
             history = new History();
-            history.setUrl(cursor.getString(cursor.getColumnIndex(DataBaseHelper.URL)));
-            history.setTitle(cursor.getString(cursor.getColumnIndex(DataBaseHelper.TITLE)));
-            history.setIcon(cursor.getString(cursor.getColumnIndex(DataBaseHelper.ICON)));
-            history.setTime(cursor.getString(cursor.getColumnIndex(DataBaseHelper.TIME)));
             list.add(history);
         }
         return list;

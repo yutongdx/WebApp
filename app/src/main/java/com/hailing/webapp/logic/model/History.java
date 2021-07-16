@@ -1,6 +1,7 @@
 package com.hailing.webapp.logic.model;
 
 public class History {
+    public int id;
     public String url;
     public String title;
     public String icon;
@@ -8,6 +9,14 @@ public class History {
 
     public History() {
 
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getUrl() {
@@ -42,7 +51,8 @@ public class History {
         this.time = time;
     }
 
-    public History(String url, String title, String icon, String time) {
+    public History(int id,String url, String title, String icon, String time) {
+        this.id=id;
         this.url = url;
         this.title = title;
         this.icon = icon;
