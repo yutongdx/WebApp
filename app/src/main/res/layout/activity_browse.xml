@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff">
+
+    <!-- 总体布局UI设计 -->
+    <!-- 底部按钮 -->
+    <LinearLayout
+        android:id="@+id/browse_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#F5F5F5"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/rb_go_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_weight="1"
+            android:button="@null"
+            android:drawableTop="@drawable/goback"
+            android:gravity="center" />
+
+        <RadioButton
+            android:id="@+id/rb_go"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_weight="1"
+            android:button="@null"
+            android:drawableTop="@drawable/bottom_go"
+            android:gravity="center"/>
+
+        <RadioButton
+            android:id="@+id/rb_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_weight="1"
+            android:button="@null"
+            android:drawableTop="@drawable/bottom_menu"
+            android:gravity="center"/>
+
+        <RadioButton
+            android:id="@+id/rb_home"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_weight="1"
+            android:button="@null"
+            android:drawableTop="@drawable/bottom_home_normal"
+            android:gravity="center"/>
+
+    </LinearLayout>
+
+    <!-- 内容（WebView） -->
+    <RelativeLayout
+        android:id="@+id/browse_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/browse_bottom">
+
+        <WebView
+            android:id="@+id/browse_web_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </RelativeLayout>
+
+</RelativeLayout>
