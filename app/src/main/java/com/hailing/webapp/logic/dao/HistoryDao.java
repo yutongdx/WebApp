@@ -39,14 +39,15 @@ public class HistoryDao {
             history = new History();
             history.setUrl(cursor.getString(cursor.getColumnIndex(DataBaseHelper.URL)));
             history.setTitle(cursor.getString(cursor.getColumnIndex(DataBaseHelper.TITLE)));
+            history.setPicture(cursor.getString(cursor.getColumnIndex(DataBaseHelper.PICTURE)));
             list.add(history);
         }
         return list;
     }
 
     public void AddHistory(History history){
-        String sql="insert into history(url,title)values(?,?)";
-        Object[] bindArgs = {history.getUrl(),history.getTitle()};
+        String sql="insert into history(url,title)values(?,?,?)";
+        Object[] bindArgs = {history.getUrl(),history.getTitle(),history.getPicture()};
         sqLiteDatabase.execSQL(sql,bindArgs);
     }
 

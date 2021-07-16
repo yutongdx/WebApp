@@ -14,6 +14,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     //表的字段名
     public static final String URL="url";
     public static final String TITLE="title";
+    public static final String PICTURE="picture";
 
     public DataBaseHelper(Context context){
         super(context,DB_NAME,null,DB_VERSION);
@@ -24,7 +25,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     //创建一个history表格
     db.execSQL("create table if not exists "+"history"+"("
             + URL + "text"
-            + TITLE + "text )");
+            + TITLE + "text"
+            + PICTURE + "text)");
     }
 
     @Override
