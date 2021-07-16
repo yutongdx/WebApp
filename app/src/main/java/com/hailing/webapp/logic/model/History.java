@@ -3,7 +3,8 @@ package com.hailing.webapp.logic.model;
 public class History {
     public String url;
     public String title;
-    public String picture;
+    public String icon;
+    public String time;
 
     public History() {
 
@@ -25,17 +26,26 @@ public class History {
         this.title = title;
     }
 
-    public String getPicture() {
-        return picture;
+    public String getIcon() {
+        return icon;
     }
 
-    public void setPicture(String picture) {
-        this.picture = picture;
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 
-    public History(String url, String title, String picture) {
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public History(String url, String title, String icon, String time) {
         this.url = url;
         this.title = title;
-        this.picture = picture;
+        this.icon = icon;
+        this.time = time;
     }
 }

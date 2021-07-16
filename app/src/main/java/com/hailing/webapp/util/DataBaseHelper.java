@@ -14,7 +14,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     //表的字段名
     public static final String URL="url";
     public static final String TITLE="title";
-    public static final String PICTURE="picture";
+    public static final String ICON="icon";
+    public static final String TIME="time";
 
     public DataBaseHelper(Context context){
         super(context,DB_NAME,null,DB_VERSION);
@@ -26,7 +27,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     db.execSQL("create table if not exists "+"history"+"("
             + URL + "text"
             + TITLE + "text"
-            + PICTURE + "text)");
+            + ICON + "text"
+            + TIME + "text)");
     }
 
     @Override

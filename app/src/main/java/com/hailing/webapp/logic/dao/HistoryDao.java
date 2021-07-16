@@ -39,15 +39,16 @@ public class HistoryDao {
             history = new History();
             history.setUrl(cursor.getString(cursor.getColumnIndex(DataBaseHelper.URL)));
             history.setTitle(cursor.getString(cursor.getColumnIndex(DataBaseHelper.TITLE)));
-            history.setPicture(cursor.getString(cursor.getColumnIndex(DataBaseHelper.PICTURE)));
+            history.setIcon(cursor.getString(cursor.getColumnIndex(DataBaseHelper.ICON)));
+            history.setTime(cursor.getString(cursor.getColumnIndex(DataBaseHelper.TIME)));
             list.add(history);
         }
         return list;
     }
 
     public void AddHistory(History history){
-        String sql="insert into history(url,title)values(?,?,?)";
-        Object[] bindArgs = {history.getUrl(),history.getTitle(),history.getPicture()};
+        String sql="insert into history(url,title,icon,time)values(?,?,?)";
+        Object[] bindArgs = {history.getUrl(),history.getTitle(),history.getIcon(),history.getTime()};
         sqLiteDatabase.execSQL(sql,bindArgs);
     }
 
@@ -55,7 +56,11 @@ public class HistoryDao {
     public void DeleteHistory(String url){
         String sql = "delete from history where url = " + url;
         sqLiteDatabase.execSQL(sql);
+    }
 
+    public void DeleteAllHistory(){
+        String sql = "delete from history";
+        sqLiteDatabase.execSQL(sql);
     }
 
 }
