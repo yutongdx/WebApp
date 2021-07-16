@@ -47,7 +47,7 @@ public class HistoryDao {
     }
 
     public void AddHistory(History history){
-        String sql="insert into history(url,title,icon,time)values(?,?,?)";
+        String sql="insert into history(url,title,icon,time)values(?,?,?,?)";
         Object[] bindArgs = {history.getUrl(),history.getTitle(),history.getIcon(),history.getTime()};
         sqLiteDatabase.execSQL(sql,bindArgs);
     }
