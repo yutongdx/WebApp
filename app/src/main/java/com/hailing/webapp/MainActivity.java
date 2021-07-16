@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Fragment historyFragment = new HistoryFragment();
     private Fragment bookmarkFragment = new BookmarkFragment();
 
-
     // 添加碎片，初始化布局
     @Override
     protected void onCreate(Bundle savedInstanceState) {
