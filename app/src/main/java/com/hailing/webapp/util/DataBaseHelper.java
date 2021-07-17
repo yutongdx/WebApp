@@ -3,32 +3,31 @@ package com.hailing.webapp.util;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.widget.Toast;
+
+import androidx.annotation.Nullable;
 
 public class DataBaseHelper extends SQLiteOpenHelper {
 
-    //数据库名称
-    private static final String DB_NAME="webapp";
-    //数据库版本
-    private static final int DB_VERSION=1;
+    public static final String CREATE_HISTORY = "create table history ("
+            + "id integer primary key autoincrement, "
+            + "url text, "
+            + "title text, "
+            + "icon text, "
+            + "time text ) ";
 
-    //表的字段名
-    public static final String URL="url";
-    public static final String TITLE="title";
-    public static final String ICON="icon";
-    public static final String TIME="time";
+    private Context mContext;
 
-    public DataBaseHelper(Context context){
-        super(context,DB_NAME,null,DB_VERSION);
+    public DataBaseHelper(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
+        super(context, name, factory, version);
+        mContext=context;
     }
+
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-    //创建一个history表格
-    db.execSQL("create table if not exists "+"history"+"("
-            + URL + "text"
-            + TITLE + "text"
-            + ICON + "text"
-            + TIME + "text)");
+    db.execSQL(CREATE_HISTORY);
+
     }
 
     @Override
