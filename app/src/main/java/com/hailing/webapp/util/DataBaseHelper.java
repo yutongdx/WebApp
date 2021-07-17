@@ -16,7 +16,14 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             + "icon text, "
             + "time text ) ";
 
+    public static final String CREATE_BOOKMARK = "create table bookmark ("
+            + "id integer primary key autoincrement, "
+            + "icon text, "
+            + "title text, "
+            + "url text ) ";
+
     private Context mContext;
+
 
     public DataBaseHelper(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
@@ -26,8 +33,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-    db.execSQL(CREATE_HISTORY);
-
+        db.execSQL(CREATE_HISTORY);
+        db.execSQL(CREATE_BOOKMARK);
     }
 
     @Override

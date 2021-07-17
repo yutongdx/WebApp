@@ -43,7 +43,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        dbHelper = new DataBaseHelper(this,"history",null,1);
+        dbHelper = new DataBaseHelper(this,"WebApp.db",null,1);
+        SQLiteDatabase sqLiteDatabase = dbHelper.getWritableDatabase();
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
