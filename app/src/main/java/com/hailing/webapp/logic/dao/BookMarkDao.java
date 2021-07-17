@@ -4,70 +4,88 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.hailing.webapp.MainActivity;
 import com.hailing.webapp.logic.model.BookMark;
-import com.hailing.webapp.logic.model.History;
-import com.hailing.webapp.util.DataBaseHelper;
 
 import java.util.ArrayList;
 
 
 public class BookMarkDao {
 
+    SQLiteDatabase sqLiteDatabase;
+    DataBaseHelper dataBaseHelper;
+
+    //创建dao对象时获取数据库的引用
+    public BookMarkDao(Context context) {
+        dataBaseHelper = new DataBaseHelper(context);
+        sqLiteDatabase = dataBaseHelper.getWritableDatabase();
+    }
+
     //添加书签
-    public void addBookmark(SQLiteDatabase db, BookMark bookMark){
+    public void addBookmark(BookMark bookMark){
         String sql = "insert into bookmark(icon,title,url) values(?,?,?)";
         Object[] bindArgs = {bookMark.getIcon(), bookMark.getTitle(), bookMark.getUrl()};
-        db.execSQL(sql, bindArgs);
+        sqLiteDatabase.execSQL(sql, bindArgs);
     }
 
     //查询所有书签
-    public ArrayList<BookMark> queryAll(SQLiteDatabase db){
+    public ArrayList<BookMark> queryAll(){
         ArrayList<BookMark> list = new ArrayList<BookMark>();
-        BookMark bookMark = null;
+        BookMark bookMark;
         String sql = "select * from bookmark";
-        Cursor cursor = db.rawQuery(sql, null);
-        if (cursor.moveToFirst()){
-            do{
-                String icon = cursor.getString(cursor.getColumnIndex("icon"));
-                String title = cursor.getString(cursor.getColumnIndex("title"));
-                String url = cursor.getString(cursor.getColumnIndex("url"));
-                bookMark = new BookMark(icon, title, url);
-                list.add(bookMark);
-            }while (cursor.moveToNext());
+
+        try (Cursor cursor = sqLiteDatabase.rawQuery(sql, null)) {
+            if (cursor.moveToFirst()){
+                do{
+                    int id = cursor.getInt(cursor.getColumnIndex("id"));
+                    String icon = cursor.getString(cursor.getColumnIndex("icon"));
+                    String title = cursor.getString(cursor.getColumnIndex("title"));
+                    String url = cursor.getString(cursor.getColumnIndex("url"));
+                    bookMark = new BookMark(id, icon, title, url);
+                    list.add(bookMark);
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
         return list;
     }
 
     //根据url查询某条书签
-    public BookMark queryOne(SQLiteDatabase db, String url){
+    public BookMark queryByUrl(String url){
         String sql = "select * from bookmark where url = ?";
         BookMark bookMark = null;
-        Cursor cursor = db.rawQuery(sql, new String[]{url});
-        if (cursor.moveToFirst()){
-            String icon = cursor.getString(cursor.getColumnIndex("icon"));
-            String title = cursor.getString(cursor.getColumnIndex("title"));
-            bookMark = new BookMark(icon, title, url);
+
+        try (Cursor cursor = sqLiteDatabase.rawQuery(sql, new String[]{url})) {
+            if (cursor.moveToFirst()){
+                int id = cursor.getInt(cursor.getColumnIndex("id"));
+                String icon = cursor.getString(cursor.getColumnIndex("icon"));
+                String title = cursor.getString(cursor.getColumnIndex("title"));
+                bookMark = new BookMark(id, icon, title, url);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
         return bookMark;
     }
 
     //删除所有标签
-    public void deleteAllBookmark(SQLiteDatabase db){
+    public void deleteAllBookmark(){
         String sql = "delete from bookmark";
-        db.execSQL(sql);
+        sqLiteDatabase.execSQL(sql);
     }
 
-    //根据url删除标签
-    public void deleteOneBookmark(SQLiteDatabase db, String url){
-        String sql = "delete from bookmark where url = ?";
-        db.execSQL(sql, new String[]{url});
+    //根据id删除标签
+    public void deleteById(int id){
+        String sql = "delete from bookmark where id = ?";
+        sqLiteDatabase.execSQL(sql, new String[]{String.valueOf(id)});
     }
 
-    //根据url修改书签的title
-    public void updateBookmark(SQLiteDatabase db, String url, String newtitle){
-        String sql = "update bookmark set title = ? where url = ?";
-        db.execSQL(sql, new String[]{newtitle, url});
+    //根据id修改书签
+    public void updateBookmark(BookMark bookMark){
+        String sql = "update bookmark set title = ?, url = ? where id = ?";
+        sqLiteDatabase.execSQL(sql, new String[]{bookMark.getTitle(), bookMark.getUrl(), String.valueOf(bookMark.getId())});
     }
 
 }

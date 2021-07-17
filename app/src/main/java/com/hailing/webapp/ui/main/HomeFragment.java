@@ -29,7 +29,7 @@ public class HomeFragment extends Fragment {
         webSettings.setSupportZoom(true);      //设定webView允许使用缩放手势
         webSettings.setLoadWithOverviewMode(true);  //设定webView以概述模式加载页面
 
-        webView.loadUrl("https://cn.bing.com/");  //主页加载百度首页
+        webView.loadUrl("https://cn.bing.com/");  //主页加载必应首页
 
         webView.setWebViewClient(new WebViewClient() {
             @Override
