@@ -10,7 +10,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.hailing.webapp.R;
-import com.hailing.webapp.util.DataBaseHelper;
 
 // 此碎片实现书签功能
 public class BookmarkFragment extends Fragment {

@@ -1,6 +1,5 @@
 package com.hailing.webapp;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -21,7 +20,6 @@ import androidx.fragment.app.FragmentManager;
 import com.hailing.webapp.ui.main.BookmarkFragment;
 import com.hailing.webapp.ui.main.HistoryFragment;
 import com.hailing.webapp.ui.main.HomeFragment;
-import com.hailing.webapp.util.DataBaseHelper;
 
 // 加载主页布局，主页逻辑代码实现
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -36,16 +34,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Fragment historyFragment = new HistoryFragment();
     private Fragment bookmarkFragment = new BookmarkFragment();
 
-    //
-    private DataBaseHelper dbHelper;
     // 添加碎片，初始化布局
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        dbHelper = new DataBaseHelper(this,"webapp",null,1);
-        dbHelper.getWritableDatabase();
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
