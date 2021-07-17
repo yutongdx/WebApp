@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="id" name="btn_search"></item>
+    <item type="id" name="et_search"/>
+    <item type="id" name="deleteAll"/>
+    <item type="id" name="mRecyclerView"/>
+    <item type="id" name="url">123</item>
+    <item type="id" name="date">2021年7月18日</item>
+</resources>
