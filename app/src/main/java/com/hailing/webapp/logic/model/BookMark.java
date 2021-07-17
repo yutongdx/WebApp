@@ -6,7 +6,12 @@ public class BookMark {
     public String title;
     public String url;
 
-    public BookMark(String icon, String title, String url){
+    public BookMark() {
+
+    }
+
+    public BookMark(int id, String icon, String title, String url){
+        this.id = id;
         this.icon = icon;
         this.title = title;
         this.url = url;

@@ -1,13 +1,15 @@
-package com.hailing.webapp.util;
+package com.hailing.webapp.logic.dao;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.widget.Toast;
-
-import androidx.annotation.Nullable;
 
 public class DataBaseHelper extends SQLiteOpenHelper {
+
+    //数据库名称
+    private static final String DB_NAME="WebApp.db";
+    //数据库版本
+    private static final int DB_VERSION=1;
 
     public static final String CREATE_HISTORY = "create table history ("
             + "id integer primary key autoincrement, "
@@ -22,12 +24,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             + "title text, "
             + "url text ) ";
 
-    private Context mContext;
 
-
-    public DataBaseHelper(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
-        mContext=context;
+    public DataBaseHelper(Context context){
+        super(context,DB_NAME,null,DB_VERSION);
     }
 
 
