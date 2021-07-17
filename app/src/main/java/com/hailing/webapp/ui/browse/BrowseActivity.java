@@ -2,17 +2,16 @@ package com.hailing.webapp.ui.browse;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Picture;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.webkit.WebBackForwardList;
+import android.webkit.WebChromeClient;
 import android.webkit.WebHistoryItem;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -60,9 +59,9 @@ public class BrowseActivity extends AppCompatActivity {
         webView.loadUrl(url);  //打开首页点击的网页
 
         //监听网页图标更新即访问新页面时，增加历史记录
-        webView.setPictureListener(new WebView.PictureListener() {
+        webView.setWebChromeClient(new WebChromeClient() {
             @Override
-            public void onNewPicture(WebView webView, @Nullable Picture picture) {
+            public void onReceivedIcon(WebView view, Bitmap bitmap) {
                 WebBackForwardList webBackForwardList = webView.copyBackForwardList();
                 WebHistoryItem webHistoryItem = webBackForwardList.getCurrentItem();
 
@@ -78,7 +77,6 @@ public class BrowseActivity extends AppCompatActivity {
                         history.setTime(GetTimeUtil.getNowTimeString());
                         //如果该网址有当天的访问记录，则先删除再添加，使历史记录排在后面
                         int queryId = historyDao.queryId(history.getUrl(), history.getTime());
-                        Log.d("BrowseActivity", String.valueOf(queryId));
                         if (queryId != -1) {
                             historyDao.deleteHistoryById(queryId);
                         }
@@ -97,7 +95,6 @@ public class BrowseActivity extends AppCompatActivity {
                     history.setTime(GetTimeUtil.getNowTimeString());
                     //如果该网址有当天的访问记录，则先删除再添加，使历史记录排在后面
                     int queryId = historyDao.queryId(history.getUrl(), history.getTime());
-                    Log.d("BrowseActivity", String.valueOf(queryId));
                     if (queryId != -1) {
                         historyDao.deleteHistoryById(queryId);
                     }
