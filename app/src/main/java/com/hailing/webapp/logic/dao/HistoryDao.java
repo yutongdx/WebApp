@@ -13,16 +13,18 @@ import java.util.ArrayList;
 
 public class HistoryDao {
 
-    /*通过db=dbHelper.getWritableDatabase()获取数据库
-    因此下面的方法都传入了db,db是在MainActivity获取的
-    不知道是不是这样做
-    1.在activity那里先获取数据库再传入db
-    2.在Dao的方法里获取数据库db再执行
-     */
+    public DataBaseHelper dbHelper;
+    public SQLiteDatabase db;
+
+    public HistoryDao(Context context){
+        dbHelper = new DataBaseHelper(context);
+    }
+
     //查询所有
-    public ArrayList<History> QueryAll(SQLiteDatabase db){
+    public ArrayList<History> QueryAll(){
         ArrayList<History> list = new ArrayList<History>();
         History history = null;
+        db = dbHelper.getWritableDatabase();
         String sql = "select * from history";
         Cursor cursor = db.rawQuery(sql,null);
         while(cursor.moveToNext()){
@@ -38,8 +40,9 @@ public class HistoryDao {
     }
 
     //根据url和时间找到历史记录的id
-    public int Query_id(String url,String time,SQLiteDatabase db){
+    public int Query_id(String url,String time){
         int id = 0;
+        db = dbHelper.getWritableDatabase();
         String sql = "select * from history where url = " + url + " and time = " + time;
         Cursor cursor = db.rawQuery(sql,null);
         while (cursor.moveToNext()){
@@ -50,14 +53,16 @@ public class HistoryDao {
     }
 
     //根据id查询历史记录
-    public void QueryByid(int id,SQLiteDatabase db){
+    public void QueryByid(int id){
+        db = dbHelper.getWritableDatabase();
         String sql = "select * from history where id = " + id;
         db.execSQL(sql);
     }
 
 
     //根据url查询历史记录
-    public  void Query_url(String url,SQLiteDatabase db){
+    public  void Query_url(String url){
+        db = dbHelper.getWritableDatabase();
         String sql = "select * from history where url = " + url;
         db.execSQL(sql);
 
@@ -65,21 +70,24 @@ public class HistoryDao {
 
 
     //添加历史记录
-    public void AddHistory(History history,SQLiteDatabase db){
+    public void AddHistory(History history){
+        db = dbHelper.getWritableDatabase();
         String sql="insert into history(id,url,title,icon,time)values(?,?,?,?,?)";
         Object[] bindArgs = {history.getId(),history.getUrl(),history.getTitle(),history.getIcon(),history.getTime()};
         db.execSQL(sql,bindArgs);
     }
 
     //根据url删除
-    public void DeleteHistory_Url(String url,SQLiteDatabase db){
+    public void DeleteHistory_Url(String url){
+        db = dbHelper.getWritableDatabase();
         String sql = "delete from history where url = " + url;
         db.execSQL(sql);
     }
 
 
     //清空所有历史记录
-    public void DeleteAllHistory(SQLiteDatabase db){
+    public void DeleteAllHistory(){
+        db = dbHelper.getWritableDatabase();
         String sql = "delete from history";
         db.execSQL(sql);
     }

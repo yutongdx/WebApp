@@ -9,6 +9,9 @@ import androidx.annotation.Nullable;
 
 public class DataBaseHelper extends SQLiteOpenHelper {
 
+    private final static String DB_NAME = "webapp";
+    private static int DB_VERSION = 1;
+
     public static final String CREATE_HISTORY = "create table history ("
             + "id integer primary key autoincrement, "
             + "url text, "
@@ -16,11 +19,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             + "icon text, "
             + "time text ) ";
 
-    private Context mContext;
 
-    public DataBaseHelper(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
-        mContext=context;
+    public DataBaseHelper(@Nullable Context context) {
+        super(context, DB_NAME, null, DB_VERSION);
     }
 
 
