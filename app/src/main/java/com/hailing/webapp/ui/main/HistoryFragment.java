@@ -10,6 +10,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.hailing.webapp.R;
+import com.hailing.webapp.logic.dao.HistoryDao;
+import com.hailing.webapp.logic.model.History;
 
 // 此碎片实现历史记录功能
 public class HistoryFragment extends Fragment {
