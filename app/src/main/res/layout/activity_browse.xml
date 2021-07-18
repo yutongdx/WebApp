@@ -33,7 +33,7 @@
             android:layout_weight="1"
             android:button="@null"
             android:drawableTop="@drawable/bottom_go"
-            android:gravity="center"/>
+            android:gravity="center" />
 
         <RadioButton
             android:id="@+id/rb_menu"
@@ -43,7 +43,7 @@
             android:layout_weight="1"
             android:button="@null"
             android:drawableTop="@drawable/bottom_menu"
-            android:gravity="center"/>
+            android:gravity="center" />
 
         <RadioButton
             android:id="@+id/rb_home"
@@ -53,7 +53,7 @@
             android:layout_weight="1"
             android:button="@null"
             android:drawableTop="@drawable/bottom_home_normal"
-            android:gravity="center"/>
+            android:gravity="center" />
 
     </LinearLayout>
 

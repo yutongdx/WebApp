@@ -29,6 +29,8 @@ import com.hailing.webapp.R;
 import com.hailing.webapp.logic.dao.BookMarkDao;
 import com.hailing.webapp.logic.dao.HistoryDao;
 import com.hailing.webapp.logic.model.History;
+import com.hailing.webapp.ui.main.BookmarkFragment;
+import com.hailing.webapp.ui.main.HistoryFragment;
 import com.hailing.webapp.util.Base64Util;
 import com.hailing.webapp.util.GetTimeUtil;
 
@@ -53,6 +55,9 @@ public class BrowseActivity extends AppCompatActivity implements View.OnClickLis
 
     private PopupWindow popupWindow;
     private View view;
+
+    private BookmarkFragment bookmarkFragment = new BookmarkFragment();
+    private HistoryFragment historyFragment = new HistoryFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

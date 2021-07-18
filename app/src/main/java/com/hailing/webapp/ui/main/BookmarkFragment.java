@@ -15,8 +15,6 @@ import com.hailing.webapp.R;
 public class BookmarkFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_bookmark, container, false);
-
-
         return view;
     }
 }

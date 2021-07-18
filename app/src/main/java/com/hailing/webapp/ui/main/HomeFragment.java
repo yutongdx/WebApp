@@ -53,12 +53,10 @@ public class HomeFragment extends Fragment {
                     webView.loadUrl(url);
                 } else { //跳转去浏览页面打开
                     BrowseActivity.actionStart(getActivity(), "homeFragment", url);
-                    getActivity().finish();
                 }
                 return true;
             }
         });
-
         return view;
     }
 }
