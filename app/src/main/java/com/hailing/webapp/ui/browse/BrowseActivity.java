@@ -3,6 +3,7 @@ package com.hailing.webapp.ui.browse;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -225,6 +226,11 @@ public class BrowseActivity extends AppCompatActivity implements View.OnClickLis
         RadioButton rb_add_bookmark = (RadioButton) view.findViewById(R.id.rb_add_bookmark);
         RadioButton rb_bookmark = (RadioButton) view.findViewById(R.id.rb_bookmark);
         RadioButton rb_history = (RadioButton) view.findViewById(R.id.rb_history);
+
+        rb_add_bookmark.setTextColor(Color.parseColor("#000000"));
+        rb_bookmark.setTextColor(Color.parseColor("#000000"));
+        rb_history.setTextColor(Color.parseColor("#000000"));
+
 
         // 设置popupWindow按钮样式
         RadioButton[] radioButtons = new RadioButton[]{rb_add_bookmark, rb_bookmark, rb_history};
