@@ -1,11 +1,11 @@
 package com.hailing.webapp.logic.model;
 
 public class History {
-    public int id;
-    public String url;
-    public String title;
-    public String icon;
-    public String time;
+    private int id;
+    private String url;
+    private String title;
+    private String icon;
+    private String time;
 
     public History() {
 

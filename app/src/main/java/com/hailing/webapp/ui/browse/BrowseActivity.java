@@ -2,16 +2,16 @@ package com.hailing.webapp.ui.browse;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.graphics.Picture;
 import android.net.Uri;
 import android.os.Bundle;
 import android.webkit.WebBackForwardList;
-import android.webkit.WebChromeClient;
 import android.webkit.WebHistoryItem;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -59,9 +59,9 @@ public class BrowseActivity extends AppCompatActivity {
         webView.loadUrl(url);  //打开首页点击的网页
 
         //监听网页图标更新即访问新页面时，增加历史记录
-        webView.setWebChromeClient(new WebChromeClient() {
+        webView.setPictureListener(new WebView.PictureListener() {
             @Override
-            public void onReceivedIcon(WebView view, Bitmap bitmap) {
+            public void onNewPicture(WebView webView, @Nullable Picture picture) {
                 WebBackForwardList webBackForwardList = webView.copyBackForwardList();
                 WebHistoryItem webHistoryItem = webBackForwardList.getCurrentItem();
 
@@ -81,12 +81,13 @@ public class BrowseActivity extends AppCompatActivity {
                             historyDao.deleteHistoryById(queryId);
                         }
                         historyDao.addHistory(history);
+
                         //更新判断条件
                         icon = newIcon;
                         url = newUrl;
 
                     }
-                } else if (!Objects.equals(url, newUrl) && !Objects.equals(webHistoryItem.getTitle(), null)){
+                } else if (!Objects.equals(url, newUrl) && !Objects.equals(webHistoryItem.getTitle(), null)) {
                     //新加载的图片无图标，则当url发生变化和标题加载完成时，增加历史记录
                     History history = new History();
                     history.setIcon("defaultIcon");
@@ -99,6 +100,7 @@ public class BrowseActivity extends AppCompatActivity {
                         historyDao.deleteHistoryById(queryId);
                     }
                     historyDao.addHistory(history);
+
                     //更新判断条件
                     icon = "defaultIcon";
                     url = newUrl;
@@ -122,7 +124,6 @@ public class BrowseActivity extends AppCompatActivity {
                     return true;//没有安装该app时，返回true，表示拦截自定义链接，但不跳转，避免弹出上面的错误页面
                 }
 
-                // TODO Auto-generated method stub
                 //跳转去浏览页面打开
                 webView.loadUrl(url);
                 return true;
