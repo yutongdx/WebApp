@@ -57,7 +57,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.fragmentTag = "homeFragment";
 
         initView();
-
     }
 
     // 碎片选择标记
@@ -90,6 +89,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // 初始化导航栏颜色和图案
         rb_home.setTextColor(Color.parseColor("#228B22"));
+        rb_history.setTextColor(Color.parseColor("#000000"));
+        rb_bookmark.setTextColor(Color.parseColor("#000000"));
         Drawable drawable = this.getResources().getDrawable(R.drawable.bottom_home_pressed);
         rb_home.setCompoundDrawablesRelativeWithIntrinsicBounds(null, drawable, null, null);
         setRadioButtonStyle(rb_home, rb_history, rb_bookmark);
