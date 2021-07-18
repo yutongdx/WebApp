@@ -32,6 +32,7 @@ public class BookmarkFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_bookmark, container, false);
+
         RecyclerView bookmark_list = (RecyclerView) view.findViewById(R.id.bookmark_list);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         bookmark_list.setLayoutManager(layoutManager);
@@ -40,6 +41,7 @@ public class BookmarkFragment extends Fragment {
         BookmarkAdapter adapter = new BookmarkAdapter(bookMarkDao.queryAll(),
                                     getActivity(), bookMarkDao );
         bookmark_list.setAdapter(adapter);
+
         return view;
     }
 

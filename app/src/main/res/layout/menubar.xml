@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:background="#F5F5F5"
+    android:orientation="horizontal">
+
+    <RadioButton
+        android:id="@+id/rb_add_bookmark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_weight="1"
+        android:button="@null"
+        android:drawableTop="@drawable/menu_bookmark"
+        android:gravity="center"
+        android:text="添加书签" />
+
+    <RadioButton
+        android:id="@+id/rb_bookmark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_weight="1"
+        android:button="@null"
+        android:drawableTop="@drawable/bottom_bookmark_normal"
+        android:gravity="center"
+        android:text="书签" />
+
+    <RadioButton
+        android:id="@+id/rb_history"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_weight="1"
+        android:button="@null"
+        android:drawableTop="@drawable/bottom_history_normal"
+        android:gravity="center"
+        android:text="历史记录" />
+
+</LinearLayout>
