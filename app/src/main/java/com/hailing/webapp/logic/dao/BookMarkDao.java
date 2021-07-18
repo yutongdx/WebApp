@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.hailing.webapp.logic.model.BookMark;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class BookMarkDao {
@@ -28,8 +29,8 @@ public class BookMarkDao {
     }
 
     //查询所有书签
-    public ArrayList<BookMark> queryAll(){
-        ArrayList<BookMark> list = new ArrayList<BookMark>();
+    public List<BookMark> queryAll(){
+        List<BookMark> list = new ArrayList<BookMark>();
         BookMark bookMark;
         String sql = "select * from bookmark";
 
