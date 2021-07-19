@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -18,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.hailing.webapp.R;
 import com.hailing.webapp.logic.dao.HistoryDao;
 import com.hailing.webapp.logic.model.History;
+import com.hailing.webapp.ui.browse.BrowseActivity;
 import com.hailing.webapp.ui.main.HistoryFragment;
 import com.hailing.webapp.util.Base64Util;
 
@@ -65,7 +65,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
                 History history = mHistoryList.get(position);
-                Toast.makeText(v.getContext(), "跳转网页:" + history.getTitle(), Toast.LENGTH_SHORT).show();
+                BrowseActivity.actionStart(v.getContext(), "historyFragment", history.getUrl());
             }
         });
 

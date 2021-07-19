@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,10 +22,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.hailing.webapp.MainActivity;
 import com.hailing.webapp.R;
 import com.hailing.webapp.logic.adapter.HistoryAdapter;
 import com.hailing.webapp.logic.dao.HistoryDao;
 import com.hailing.webapp.logic.model.History;
+import com.hailing.webapp.ui.browse.BrowseActivity;
 
 import java.util.Collections;
 import java.util.List;
@@ -61,6 +64,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onRefresh() {
                 refresh();
+                swipeRefresh.setRefreshing(false);
             }
         });
 
@@ -82,7 +86,30 @@ public class HistoryFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.history_go_back:
-                //TODO 待添加页面跳转相关功能
+                MainActivity mainActivity = (MainActivity) getActivity();
+                String from = mainActivity.fromTag;
+                mainActivity.fromTag = mainActivity.toTag;
+                Log.d("jump", "from:" + mainActivity.fromTag);
+                Log.d("jump","to:" + mainActivity.toTag);
+
+                switch (from) {
+                    case "homeFragment":
+                        mainActivity.toTag = "homeFragment";
+                        mainActivity.switchFragment(mainActivity.toTag);
+                        break;
+                    case "historyFragment":
+                        mainActivity.toTag = "historyFragment";
+                        mainActivity.switchFragment(mainActivity.toTag);
+                        break;
+                    case "bookmarkFragment":
+                        mainActivity.toTag = "bookmarkFragment";
+                        mainActivity.switchFragment(mainActivity.toTag);
+                        break;
+                    default:  //返回网页
+                        mainActivity.toTag = from;
+                        BrowseActivity.actionStart(mainActivity, "historyFragment", mainActivity.toTag);
+                        break;
+                }
                 break;
             case R.id.history_clear:
                 AlertDialog.Builder dialog = new AlertDialog.Builder(v.getContext());
@@ -122,7 +149,6 @@ public class HistoryFragment extends Fragment implements View.OnClickListener {
         Collections.reverse(historyList);
         HistoryAdapter adapter = new HistoryAdapter(historyList);
         recyclerView.setAdapter(adapter);
-        swipeRefresh.setRefreshing(false);
     }
 
     private class LocalReceiver extends BroadcastReceiver {
@@ -146,4 +172,9 @@ public class HistoryFragment extends Fragment implements View.OnClickListener {
         localBroadcastManager.unregisterReceiver(localReceiver);    //取消广播的注册
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        refresh();
+    }
 }
