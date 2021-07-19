@@ -2,25 +2,27 @@ package com.hailing.webapp.ui.browse;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Picture;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
-import android.view.View;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebBackForwardList;
-import android.webkit.WebChromeClient;
 import android.webkit.WebHistoryItem;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.PopupWindow;
 import android.widget.RadioButton;
+import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -28,9 +30,8 @@ import com.hailing.webapp.MainActivity;
 import com.hailing.webapp.R;
 import com.hailing.webapp.logic.dao.BookMarkDao;
 import com.hailing.webapp.logic.dao.HistoryDao;
+import com.hailing.webapp.logic.model.BookMark;
 import com.hailing.webapp.logic.model.History;
-import com.hailing.webapp.ui.main.BookmarkFragment;
-import com.hailing.webapp.ui.main.HistoryFragment;
 import com.hailing.webapp.util.Base64Util;
 import com.hailing.webapp.util.GetTimeUtil;
 
@@ -39,6 +40,7 @@ import java.util.Objects;
 // 浏览页功能
 public class BrowseActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private WebView webView;
     private Intent intent;
     private String fromTag;
     private String icon;
@@ -56,8 +58,8 @@ public class BrowseActivity extends AppCompatActivity implements View.OnClickLis
     private PopupWindow popupWindow;
     private View view;
 
-    private BookmarkFragment bookmarkFragment = new BookmarkFragment();
-    private HistoryFragment historyFragment = new HistoryFragment();
+    private WebBackForwardList webBackForwardList;
+    private WebHistoryItem webHistoryItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +79,7 @@ public class BrowseActivity extends AppCompatActivity implements View.OnClickLis
         bookMarkDao = new BookMarkDao(this);
         historyDao = new HistoryDao(this);
 
-        WebView webView = findViewById(R.id.browse_web_view);
+        webView = findViewById(R.id.browse_web_view);
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);   //设定webView允许使用JavaScript
         webSettings.setSupportZoom(true);      //设定webView允许使用缩放手势
@@ -89,11 +91,11 @@ public class BrowseActivity extends AppCompatActivity implements View.OnClickLis
         webView.loadUrl(url);  //打开首页点击的网页
 
         //监听网页图标更新即访问新页面时，增加历史记录
-        webView.setWebChromeClient(new WebChromeClient() {
+        webView.setPictureListener(new WebView.PictureListener() {
             @Override
-            public void onReceivedIcon(WebView view, Bitmap bitmap) {
-                WebBackForwardList webBackForwardList = webView.copyBackForwardList();
-                WebHistoryItem webHistoryItem = webBackForwardList.getCurrentItem();
+            public void onNewPicture(WebView webView, @Nullable Picture picture) {
+                webBackForwardList = webView.copyBackForwardList();
+                webHistoryItem = webBackForwardList.getCurrentItem();
 
                 String newIcon = Base64Util.bitmapToBase64(webHistoryItem.getFavicon());
                 String newUrl = webHistoryItem.getOriginalUrl();
@@ -152,7 +154,6 @@ public class BrowseActivity extends AppCompatActivity implements View.OnClickLis
                     return true;//没有安装该app时，返回true，表示拦截自定义链接，但不跳转，避免弹出上面的错误页面
                 }
 
-                // TODO Auto-generated method stub
                 //跳转去浏览页面打开
                 webView.loadUrl(url);
                 return true;
@@ -166,6 +167,13 @@ public class BrowseActivity extends AppCompatActivity implements View.OnClickLis
         intent.putExtra("fromTag", fromTag);
         intent.putExtra("url", url);
         context.startActivity(intent);
+    }
+
+    //浏览页面打开BrowseActivity时更新Intent
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
     }
 
     // 初始化底部导航栏按钮
@@ -189,11 +197,17 @@ public class BrowseActivity extends AppCompatActivity implements View.OnClickLis
         switch (v.getId()) {
             // 此处添加跳转到上一个页面的代码
             case R.id.rb_go_back:
-
+                if (webView.canGoBack()) {
+                    webView.goBack();
+                } else {
+                    MainActivity.actionStart(this, webView.getOriginalUrl(), fromTag);
+                }
                 break;
             // 此处添加跳转到下一个页面的代码
             case R.id.rb_go:
-
+                if (webView.canGoForward()) {
+                    webView.goForward();
+                }
                 break;
             // 此处添加显示菜单栏代码
             case R.id.rb_menu:
@@ -201,21 +215,35 @@ public class BrowseActivity extends AppCompatActivity implements View.OnClickLis
                 break;
             // 此处添加回到主页代码
             case R.id.rb_home:
-                Intent i = new Intent(BrowseActivity.this, MainActivity.class);
-                startActivity(i);
+                MainActivity.actionStart(this, "BrowseActivity", "homeFragment");
                 finish();
                 break;
             // 此处为添加书签代码
             case R.id.rb_add_bookmark:
-
+                BookMark bookMark = new BookMark();
+                if (webHistoryItem.getFavicon() == null){
+                    bookMark.setIcon("defaultIcon");
+                } else {
+                    bookMark.setIcon(Base64Util.bitmapToBase64(webHistoryItem.getFavicon()));
+                }
+                bookMark.setTitle(webHistoryItem.getTitle());
+                bookMark.setUrl(webHistoryItem.getOriginalUrl());
+                bookMarkDao.addBookmark(bookMark);
+                Toast.makeText(this, "添加成功", Toast.LENGTH_SHORT).show();
                 break;
             // 此处为显示书签列表代码
             case R.id.rb_bookmark:
-
+                MainActivity.actionStart(this, webView.getOriginalUrl(), "bookmarkFragment");
+                finish();
                 break;
             // 此处为显示历史记录代码
             case R.id.rb_history:
-
+                MainActivity.actionStart(this, webView.getOriginalUrl(), "historyFragment");
+                finish();
+                break;
+            // 此处为取消代码
+            case R.id.browse_cancel:
+                popupWindow.dismiss();
                 break;
         }
     }
@@ -231,11 +259,11 @@ public class BrowseActivity extends AppCompatActivity implements View.OnClickLis
         RadioButton rb_add_bookmark = (RadioButton) view.findViewById(R.id.rb_add_bookmark);
         RadioButton rb_bookmark = (RadioButton) view.findViewById(R.id.rb_bookmark);
         RadioButton rb_history = (RadioButton) view.findViewById(R.id.rb_history);
+        Button browseCancel = (Button) view.findViewById(R.id.browse_cancel);
 
         rb_add_bookmark.setTextColor(Color.parseColor("#000000"));
         rb_bookmark.setTextColor(Color.parseColor("#000000"));
         rb_history.setTextColor(Color.parseColor("#000000"));
-
 
         // 设置popupWindow按钮样式
         RadioButton[] radioButtons = new RadioButton[]{rb_add_bookmark, rb_bookmark, rb_history};
@@ -254,6 +282,7 @@ public class BrowseActivity extends AppCompatActivity implements View.OnClickLis
         rb_add_bookmark.setOnClickListener(this);
         rb_bookmark.setOnClickListener(this);
         rb_history.setOnClickListener(this);
+        browseCancel.setOnClickListener(this);
 
         // 显示popupWindow布局
         View popView = LayoutInflater.from(BrowseActivity.this).inflate(R.layout.activity_browse, null);

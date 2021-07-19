@@ -1,11 +1,14 @@
 package com.hailing.webapp;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.RadioButton;
@@ -28,6 +31,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private RadioButton rb_history;
     private RadioButton rb_bookmark;
     private static boolean isExit = false; // 判断是否退出软件
+
+    //用于判断进入主页跳转去哪个Fragment
+    public String fromTag;
+    public String toTag;
 
     // 新建主界面三个模块的碎片对象
     private Fragment homeFragment = new HomeFragment();
@@ -55,12 +62,42 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .hide(bookmarkFragment)
                 .commit();
         this.fragmentTag = "homeFragment";
-
+        toTag = "homeFragment";
         initView();
     }
 
     // 碎片选择标记
     public void switchFragment(String toTag) {
+        Drawable drawable1;
+        Drawable drawable2;
+        Drawable drawable3;
+        //先将导航栏图标及文字全部变灰色
+        rb_home.setTextColor(Color.parseColor("#000000"));
+        rb_history.setTextColor(Color.parseColor("#000000"));
+        rb_bookmark.setTextColor(Color.parseColor("#000000"));
+        drawable1 = this.getResources().getDrawable(R.drawable.bottom_home_normal);
+        drawable2 = this.getResources().getDrawable(R.drawable.bottom_history_normal);
+        drawable3 = this.getResources().getDrawable(R.drawable.bottom_bookmark_normal);
+
+        switch (toTag) {
+            case "homeFragment":
+                rb_home.setTextColor(Color.parseColor("#228B22"));
+                drawable1 = this.getResources().getDrawable(R.drawable.bottom_home_pressed);
+                break;
+            case "historyFragment":
+                rb_history.setTextColor(Color.parseColor("#228B22"));
+                drawable2 = this.getResources().getDrawable(R.drawable.bottom_history_pressed);
+                break;
+            case "bookMarkFragment":
+                rb_bookmark.setTextColor(Color.parseColor("#228B22"));
+                drawable3 = this.getResources().getDrawable(R.drawable.bottom_bookmark_pressed);
+                break;
+        }
+        rb_home.setCompoundDrawablesRelativeWithIntrinsicBounds(null, drawable1, null, null);
+        rb_history.setCompoundDrawablesRelativeWithIntrinsicBounds(null, drawable2, null, null);
+        rb_bookmark.setCompoundDrawablesRelativeWithIntrinsicBounds(null, drawable3, null, null);
+        setRadioButtonStyle(rb_home, rb_history, rb_bookmark);
+
         MyFragmentActivity mfa = new MyFragmentActivity();
         mfa.switchFragment(getSupportFragmentManager(), toTag, this.fragmentTag);
         this.fragmentTag = toTag;
@@ -96,60 +133,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setRadioButtonStyle(rb_home, rb_history, rb_bookmark);
     }
 
-    // 选择跳转碎片（代码和功能有冗余，待优化）
+    // 选择跳转碎片
     public void onClick(View v) {
+        fromTag = toTag;
         switch (v.getId()) {
-            case R.id.rb_home:
-                rb_home.setTextColor(Color.parseColor("#228B22"));
-                rb_history.setTextColor(Color.parseColor("#000000"));
-                rb_bookmark.setTextColor(Color.parseColor("#000000"));
-
-                Drawable drawable1 = this.getResources().getDrawable(R.drawable.bottom_home_pressed);
-                Drawable drawable2 = this.getResources().getDrawable(R.drawable.bottom_history_normal);
-                Drawable drawable3 = this.getResources().getDrawable(R.drawable.bottom_bookmark_normal);
-
-                rb_home.setCompoundDrawablesRelativeWithIntrinsicBounds(null, drawable1, null, null);
-                rb_history.setCompoundDrawablesRelativeWithIntrinsicBounds(null, drawable2, null, null);
-                rb_bookmark.setCompoundDrawablesRelativeWithIntrinsicBounds(null, drawable3, null, null);
-                setRadioButtonStyle(rb_home, rb_history, rb_bookmark);
-
-                this.switchFragment("homeFragment");
-
-                break;
             case R.id.rb_history:
-                rb_history.setTextColor(Color.parseColor("#228B22"));
-                rb_home.setTextColor(Color.parseColor("#000000"));
-                rb_bookmark.setTextColor(Color.parseColor("#000000"));
-
-                Drawable drawable4 = this.getResources().getDrawable(R.drawable.bottom_home_normal);
-                Drawable drawable5 = this.getResources().getDrawable(R.drawable.bottom_history_pressed);
-                Drawable drawable6 = this.getResources().getDrawable(R.drawable.bottom_bookmark_normal);
-
-                rb_home.setCompoundDrawablesRelativeWithIntrinsicBounds(null, drawable4, null, null);
-                rb_history.setCompoundDrawablesRelativeWithIntrinsicBounds(null, drawable5, null, null);
-                rb_bookmark.setCompoundDrawablesRelativeWithIntrinsicBounds(null, drawable6, null, null);
-                setRadioButtonStyle(rb_home, rb_history, rb_bookmark);
-
-                this.switchFragment("historyFragment");
-
+                toTag = "historyFragment";
                 break;
             case R.id.rb_bookmark:
-                rb_bookmark.setTextColor(Color.parseColor("#228B22"));
-                rb_home.setTextColor(Color.parseColor("#000000"));
-                rb_history.setTextColor(Color.parseColor("#000000"));
-
-                Drawable drawable7 = this.getResources().getDrawable(R.drawable.bottom_home_normal);
-                Drawable drawable8 = this.getResources().getDrawable(R.drawable.bottom_history_normal);
-                Drawable drawable9 = this.getResources().getDrawable(R.drawable.bottom_bookmark_pressed);
-
-                rb_home.setCompoundDrawablesRelativeWithIntrinsicBounds(null, drawable7, null, null);
-                rb_history.setCompoundDrawablesRelativeWithIntrinsicBounds(null, drawable8, null, null);
-                rb_bookmark.setCompoundDrawablesRelativeWithIntrinsicBounds(null, drawable9, null, null);
-                setRadioButtonStyle(rb_home, rb_history, rb_bookmark);
-
-                this.switchFragment("bookmarkFragment");
+                toTag = "bookmarkFragment";
+                break;
+            default: //默认为主页
+                toTag = "homeFragment";
                 break;
         }
+        this.switchFragment(toTag);
     }
 
     // 设置RadioButton样式、大小等
@@ -195,4 +193,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             System.exit(0);
         }
     }
+
+    //用于传入指定的参数来启动MainActivity
+    public static void actionStart(Context context, String fromTag, String toTag) {
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.putExtra("fromTag", fromTag);
+        intent.putExtra("toTag", toTag);
+        context.startActivity(intent);
+    }
+
+    //浏览页面打开MainActivity时更新Intent
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+    }
+
+    //重新进入MainActivity时，跳转去相应的Fragment
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Intent intent = getIntent();
+        fromTag = intent.getStringExtra("fromTag");
+        if ( fromTag != null) {  //说明非应用首次打开该活动
+            toTag = intent.getStringExtra("toTag");
+            this.switchFragment(toTag);
+        }
+        Log.d("jump", "from:" + fromTag);
+        Log.d("jump","to:" + toTag);
+    }
+
 }

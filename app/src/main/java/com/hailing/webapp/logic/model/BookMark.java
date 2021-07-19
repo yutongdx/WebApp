@@ -1,10 +1,10 @@
 package com.hailing.webapp.logic.model;
 
 public class BookMark {
-    public int id;
-    public String icon;
-    public String title;
-    public String url;
+    private int id;
+    private String icon;
+    private String title;
+    private String url;
 
     public BookMark() {
 

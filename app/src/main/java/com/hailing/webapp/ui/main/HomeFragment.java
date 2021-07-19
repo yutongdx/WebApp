@@ -48,7 +48,6 @@ public class HomeFragment extends Fragment {
                     return true;//没有安装该app时，返回true，表示拦截自定义链接，但不跳转，避免弹出上面的错误页面
                 }
 
-                // TODO Auto-generated method stub
                 if (url.contains("FORM=BEHPTB")) {
                     webView.loadUrl(url);
                 } else { //跳转去浏览页面打开

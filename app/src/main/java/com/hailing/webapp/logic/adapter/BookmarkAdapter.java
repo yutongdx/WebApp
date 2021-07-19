@@ -18,6 +18,7 @@ import com.hailing.webapp.R;
 import com.hailing.webapp.logic.dao.BookMarkDao;
 import com.hailing.webapp.logic.model.BookMark;
 import com.hailing.webapp.ui.browse.BrowseActivity;
+import com.hailing.webapp.util.Base64Util;
 
 import java.util.List;
 
@@ -60,7 +61,7 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHo
             @Override
             public void onClick(View v) {
                 BookMark bookMark = mBookmarkList.get(holder.getAdapterPosition());
-                BrowseActivity.actionStart(mcontext, "homeFragment", bookMark.url);
+                BrowseActivity.actionStart(mcontext, "bookmarkFragment", bookMark.getUrl());
             }
         });
 
@@ -71,12 +72,13 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHo
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         BookMark bookMark = mBookmarkList.get(position);
-        if (bookMark.icon.equals("icon_default")){
+        if (bookMark.getIcon().equals("defaultIcon")){
             holder.icon.setImageResource(R.drawable.icon_default);
+        } else {
+            holder.icon.setImageBitmap(Base64Util.base64ToBitmap(bookMark.getIcon()));
         }
-        //否则加载图标，待补充
-        holder.title.setText(bookMark.title);
-        holder.url.setText(bookMark.url);
+        holder.title.setText(bookMark.getTitle());
+        holder.url.setText(bookMark.getUrl());
         holder.bookmark_edit.setImageResource(R.drawable.item_edit);
         holder.bookmark_delete.setImageResource(R.drawable.item_delete);
 
@@ -92,8 +94,8 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHo
 
                 //设置默认值
                 BookMark bookMark = mBookmarkList.get(holder.getAdapterPosition());
-                editNewTitle.setText(bookMark.title);
-                editNewUrl.setText(bookMark.url);
+                editNewTitle.setText(bookMark.getTitle());
+                editNewUrl.setText(bookMark.getUrl());
 
                 //设置属性
                 dialog.setTitle("修改书签");
@@ -107,8 +109,8 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHo
                         // 修改数据库数据
                         mbookMarkDao.updateBookmark(bookMark);
                         // 刷新页面
-                        mBookmarkList.get(holder.getAdapterPosition()).setTitle(bookMark.title);
-                        mBookmarkList.get(holder.getAdapterPosition()).setUrl(bookMark.url);
+                        mBookmarkList.get(holder.getAdapterPosition()).setTitle(bookMark.getTitle());
+                        mBookmarkList.get(holder.getAdapterPosition()).setUrl(bookMark.getUrl());
                         notifyItemChanged(holder.getAdapterPosition());
                         Toast.makeText(mcontext, "修改成功", Toast.LENGTH_SHORT).show();
                     }
@@ -129,12 +131,28 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHo
             @Override
             public void onClick(View v) {
                 BookMark bookMark = mBookmarkList.get(holder.getAdapterPosition());
-                // 修改数据库数据
-                mbookMarkDao.deleteById(bookMark.id);
-                // 刷新页面
-                mBookmarkList.remove(holder.getAdapterPosition());
-                notifyItemRemoved(holder.getAdapterPosition());
-                Toast.makeText(mcontext, "删除成功", Toast.LENGTH_SHORT).show();
+                AlertDialog.Builder dialog = new AlertDialog.Builder(v.getContext());
+                dialog.setTitle("删除提醒");
+                dialog.setMessage("确认删除该书签？");
+                dialog.setCancelable(true);
+                dialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // 修改数据库数据
+                        mbookMarkDao.deleteById(bookMark.getId());
+                        // 刷新页面
+                        mBookmarkList.remove(holder.getAdapterPosition());
+                        notifyItemRemoved(holder.getAdapterPosition());
+                        Toast.makeText(mcontext, "删除成功", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                dialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+                dialog.show();
+
             }
         });
 
