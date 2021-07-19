@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 rb_history.setTextColor(Color.parseColor("#228B22"));
                 drawable2 = this.getResources().getDrawable(R.drawable.bottom_history_pressed);
                 break;
-            case "bookMarkFragment":
+            case "bookmarkFragment":
                 rb_bookmark.setTextColor(Color.parseColor("#228B22"));
                 drawable3 = this.getResources().getDrawable(R.drawable.bottom_bookmark_pressed);
                 break;
