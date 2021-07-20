@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +30,7 @@ import com.hailing.webapp.ui.browse.BrowseActivity;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 // 此碎片实现历史记录功能
 public class HistoryFragment extends Fragment implements View.OnClickListener {
@@ -89,8 +89,6 @@ public class HistoryFragment extends Fragment implements View.OnClickListener {
                 MainActivity mainActivity = (MainActivity) getActivity();
                 String from = mainActivity.fromTag;
                 mainActivity.fromTag = mainActivity.toTag;
-                Log.d("jump", "from:" + mainActivity.fromTag);
-                Log.d("jump","to:" + mainActivity.toTag);
 
                 switch (from) {
                     case "homeFragment":
@@ -146,6 +144,29 @@ public class HistoryFragment extends Fragment implements View.OnClickListener {
             historyList.clear();
         }
         historyList = historyDao.queryAll();
+        //如果前后两个对象的时间不同，增加时间标签
+        int size = historyList.size();
+        int i = 1;
+        while (i < size) {
+            if (!Objects.equals(historyList.get(i).getTime(),historyList.get(i-1).getTime())) {
+                History history = new History();
+                history.setId(-10);
+                history.setTime(historyList.get(i-1).getTime());
+                historyList.add(i, history);
+                size++;
+                i++;
+            }
+            i++;
+        }
+
+        //增加当日时间
+        if (!historyList.isEmpty()) {
+            History history = new History();
+            history.setId(-10);
+            history.setTime(historyList.get(historyList.size()-1).getTime());
+            historyList.add(history);
+        }
+
         Collections.reverse(historyList);
         HistoryAdapter adapter = new HistoryAdapter(historyList);
         recyclerView.setAdapter(adapter);
