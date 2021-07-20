@@ -31,20 +31,24 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         View historyView;
+        View historyContentItem;
+        View historyTimeItem;
         ImageView historyIcon;
         TextView historyTitle;
         TextView historyUrl;
-        TextView historyTime;
         ImageButton historyDelete;
+        TextView historyDate;
 
         public ViewHolder(View view) {
             super(view);
             historyView = view;
+            historyContentItem = view.findViewById(R.id.history_content_item);
+            historyTimeItem = view.findViewById(R.id.history_date_item);
             historyIcon = view.findViewById(R.id.history_icon);
             historyTitle = view.findViewById(R.id.history_title);
             historyUrl = view.findViewById(R.id.history_url);
-            historyTime = view.findViewById(R.id.history_time);
             historyDelete = view.findViewById(R.id.history_delete);
+            historyDate = view.findViewById(R.id.history_date);
         }
     }
 
@@ -102,15 +106,21 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         History history = mHistoryList.get(i);
-        String icon = history.getIcon();
-        if (Objects.equals(icon, "defaultIcon")) {
-            viewHolder.historyIcon.setImageResource(R.drawable.icon_default);
+        if (history.getId() == -10) {
+            viewHolder.historyContentItem.setVisibility(View.GONE);
+            viewHolder.historyTimeItem.setVisibility(View.VISIBLE);
+            viewHolder.historyDate.setText(history.getTime());
         } else {
-            viewHolder.historyIcon.setImageBitmap(Base64Util.base64ToBitmap(history.getIcon()));
+            String icon = history.getIcon();
+            if (Objects.equals(icon, "defaultIcon")) {
+                viewHolder.historyIcon.setImageResource(R.drawable.icon_default);
+            } else {
+                viewHolder.historyIcon.setImageBitmap(Base64Util.base64ToBitmap(history.getIcon()));
+            }
+            viewHolder.historyTitle.setText(history.getTitle());
+            viewHolder.historyUrl.setText(history.getUrl());
         }
-        viewHolder.historyTitle.setText(history.getTitle());
-        viewHolder.historyUrl.setText(history.getUrl());
-        viewHolder.historyTime.setText(history.getTime());
+
     }
 
     @Override
