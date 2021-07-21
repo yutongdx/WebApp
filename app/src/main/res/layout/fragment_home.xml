@@ -1,12 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!--首页UI设计-->
-    <WebView
-        android:id="@+id/home_web_view"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/home_swipeRefresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <!--首页UI设计-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:orientation="horizontal">
+
+
+                <!-- 地址栏-->
+                <EditText
+                    android:id="@+id/home_search"
+                    android:layout_width="0dp"
+                    android:layout_height="45dp"
+                    android:hint="请输入网址或搜索关键字"
+                    android:singleLine="true"
+                    android:layout_gravity="bottom"
+                    android:layout_weight="5"/>
+
+                <Button
+                    android:id="@+id/home_goto"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:background="#505D8EFF"
+                    android:textColor="#000000"
+                    app:backgroundTint="@null"
+                    android:layout_gravity="center"
+                    android:text="前往"/>
+
+            </LinearLayout>
+
+            <com.hailing.webapp.ui.RefreshWebView
+                android:id="@+id/home_web_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+</RelativeLayout>

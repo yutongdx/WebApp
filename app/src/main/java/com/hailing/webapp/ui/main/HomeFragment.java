@@ -9,28 +9,35 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.hailing.webapp.R;
+import com.hailing.webapp.ui.RefreshWebView;
 import com.hailing.webapp.ui.browse.BrowseActivity;
+import com.hailing.webapp.util.UrlUtil;
 
 public class HomeFragment extends Fragment {
+
+    private SwipeRefreshLayout swipeRefresh;
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        WebView webView = view.findViewById(R.id.home_web_view);
+        //设置主页搜索页面和跳转处理
+        RefreshWebView webView = view.findViewById(R.id.home_web_view);
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);   //设定webView允许使用JavaScript
         webSettings.setSupportZoom(true);      //设定webView允许使用缩放手势
+        webSettings.setAppCacheEnabled(true);
         webSettings.setLoadWithOverviewMode(true);  //设定webView以概述模式加载页面
-
         webView.loadUrl("https://cn.bing.com/");  //主页加载必应首页
-
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView webView, String url) {
@@ -56,6 +63,37 @@ public class HomeFragment extends Fragment {
                 return true;
             }
         });
+
+        //下拉刷新
+        swipeRefresh = (SwipeRefreshLayout)view.findViewById(R.id.home_swipeRefresh);
+        swipeRefresh.setColorSchemeResources(R.color.design_default_color_primary);
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                webView.loadUrl("https://cn.bing.com/");
+                swipeRefresh.setRefreshing(false);
+            }
+        });
+        swipeRefresh.setOnChildScrollUpCallback(new SwipeRefreshLayout.OnChildScrollUpCallback() {
+            @Override
+            public boolean canChildScrollUp(SwipeRefreshLayout parent, @Nullable View child) {
+                return webView.getScrollY()>0;
+            }
+        });
+
+
+        //顶部搜索
+        EditText search = (EditText)view.findViewById(R.id.home_search);
+        Button homeGoto = (Button)view.findViewById(R.id.home_goto);
+        homeGoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String url = UrlUtil.converKeywordLoadOrSearch(search.getText().toString());
+                BrowseActivity.actionStart(getActivity(), "homeFragment", url);
+            }
+        });
+
         return view;
     }
+
 }

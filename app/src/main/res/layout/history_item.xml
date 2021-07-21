@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="50dp">
 
@@ -8,7 +8,8 @@
         android:id="@+id/history_content_item"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="48dp"
+        android:layout_gravity="center">
 
         <ImageView
             android:id="@+id/history_icon"
@@ -59,7 +60,8 @@
     <LinearLayout
         android:id="@+id/history_date_item"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="48dp"
+        android:layout_gravity="center"
         android:visibility="gone">
 
         <TextView
@@ -69,6 +71,13 @@
             android:layout_height="match_parent"
             android:layout_marginStart="10dp"
             android:text="日期"/>
+
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="bottom"
+        android:background="#a7a7a7"/>
 
 </LinearLayout>
