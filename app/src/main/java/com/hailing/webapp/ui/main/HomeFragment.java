@@ -11,6 +11,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,6 +22,8 @@ import com.hailing.webapp.R;
 import com.hailing.webapp.ui.RefreshWebView;
 import com.hailing.webapp.ui.browse.BrowseActivity;
 import com.hailing.webapp.util.UrlUtil;
+
+import java.util.Objects;
 
 public class HomeFragment extends Fragment {
 
@@ -88,8 +91,12 @@ public class HomeFragment extends Fragment {
         homeGoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String url = UrlUtil.converKeywordLoadOrSearch(search.getText().toString());
-                BrowseActivity.actionStart(getActivity(), "homeFragment", url);
+                String url = UrlUtil.convertKeywordLoadOrSearch(search.getText().toString());
+                if (Objects.equals(url, "")) {
+                    Toast.makeText(getActivity(), "暂未输入", Toast.LENGTH_SHORT).show();
+                } else {
+                    BrowseActivity.actionStart(getActivity(), "homeFragment", url);
+                }
             }
         });
 
