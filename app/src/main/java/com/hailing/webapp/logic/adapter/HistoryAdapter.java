@@ -111,6 +111,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
             viewHolder.historyTimeItem.setVisibility(View.VISIBLE);
             viewHolder.historyDate.setText(history.getTime());
         } else {
+            viewHolder.historyContentItem.setVisibility(View.VISIBLE);
+            viewHolder.historyTimeItem.setVisibility(View.GONE);
             String icon = history.getIcon();
             if (Objects.equals(icon, "defaultIcon")) {
                 viewHolder.historyIcon.setImageResource(R.drawable.icon_default);

@@ -18,6 +18,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.Toast;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.hailing.webapp.MainActivity;
 import com.hailing.webapp.R;
@@ -32,16 +34,18 @@ import com.hailing.webapp.logic.dao.BookMarkDao;
 import com.hailing.webapp.logic.dao.HistoryDao;
 import com.hailing.webapp.logic.model.BookMark;
 import com.hailing.webapp.logic.model.History;
+import com.hailing.webapp.ui.RefreshWebView;
 import com.hailing.webapp.util.Base64Util;
 import com.hailing.webapp.util.GetTimeUtil;
+import com.hailing.webapp.util.UrlUtil;
 
 import java.util.Objects;
 
 // 浏览页功能
 public class BrowseActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private WebView webView;
-    private Intent intent;
+    private SwipeRefreshLayout swipeRefresh;
+    private RefreshWebView webView;
     private String fromTag;
     private String icon;
     private String url;
@@ -49,14 +53,7 @@ public class BrowseActivity extends AppCompatActivity implements View.OnClickLis
     private BookMarkDao bookMarkDao;
     private HistoryDao historyDao;
 
-
-    private RadioButton rb_go_back;
-    private RadioButton rb_go;
-    private RadioButton rb_menu;
-    private RadioButton rb_home;
-
     private PopupWindow popupWindow;
-    private View view;
 
     private WebBackForwardList webBackForwardList;
     private WebHistoryItem webHistoryItem;
@@ -79,13 +76,41 @@ public class BrowseActivity extends AppCompatActivity implements View.OnClickLis
         bookMarkDao = new BookMarkDao(this);
         historyDao = new HistoryDao(this);
 
+        //下拉刷新
+        swipeRefresh = (SwipeRefreshLayout)findViewById(R.id.browse_swipeRefresh);
+        swipeRefresh.setColorSchemeResources(R.color.design_default_color_primary);
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                webView.loadUrl(url);
+                swipeRefresh.setRefreshing(false);
+            }
+        });
+        swipeRefresh.setOnChildScrollUpCallback(new SwipeRefreshLayout.OnChildScrollUpCallback() {
+            @Override
+            public boolean canChildScrollUp(SwipeRefreshLayout parent, @Nullable View child) {
+                return webView.getScrollY()>0;
+            }
+        });
+
+        //顶部搜索
+        EditText search = (EditText)findViewById(R.id.browse_search);
+        Button homeGoto = (Button)findViewById(R.id.browse_goto);
+        homeGoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                url = UrlUtil.converKeywordLoadOrSearch(search.getText().toString());
+                webView.loadUrl(url);
+            }
+        });
+
         webView = findViewById(R.id.browse_web_view);
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);   //设定webView允许使用JavaScript
         webSettings.setSupportZoom(true);      //设定webView允许使用缩放手势
         webSettings.setLoadWithOverviewMode(true);  //设定webView以概述模式加载页面
 
-        intent = getIntent();
+        Intent intent = getIntent();
         fromTag = intent.getStringExtra("fromTag");
         url = intent.getStringExtra("url");
         webView.loadUrl(url);  //打开首页点击的网页
@@ -96,14 +121,37 @@ public class BrowseActivity extends AppCompatActivity implements View.OnClickLis
             public void onNewPicture(WebView webView, @Nullable Picture picture) {
                 webBackForwardList = webView.copyBackForwardList();
                 webHistoryItem = webBackForwardList.getCurrentItem();
+                if (webHistoryItem != null) {
+                    String newIcon;
+                    if (!Objects.equals(webHistoryItem.getFavicon(), null)) {
+                        newIcon = Base64Util.bitmapToBase64(webHistoryItem.getFavicon());
+                    } else {
+                        newIcon = "defaultIcon";
+                    }
+                    String newUrl = webHistoryItem.getOriginalUrl();
 
-                String newIcon = Base64Util.bitmapToBase64(webHistoryItem.getFavicon());
-                String newUrl = webHistoryItem.getOriginalUrl();
+                    if (!Objects.equals(newIcon, "defaultIcon")) {   //新加载的页面有图标时
+                        if (!Objects.equals(icon, newIcon)) {  //避免在渲染页面过程中重复加载相同图标
+                            History history = new History();
+                            history.setIcon(newIcon);
+                            history.setTitle(webHistoryItem.getTitle());
+                            history.setUrl(webHistoryItem.getOriginalUrl());
+                            history.setTime(GetTimeUtil.getNowTimeString());
+                            //如果该网址有当天的访问记录，则先删除再添加，使历史记录排在后面
+                            int queryId = historyDao.queryId(history.getUrl(), history.getTime());
+                            if (queryId != -1) {
+                                historyDao.deleteHistoryById(queryId);
+                            }
+                            historyDao.addHistory(history);
+                            //更新判断条件
+                            icon = newIcon;
+                            url = newUrl;
 
-                if (!Objects.equals(newIcon, null)) {   //新加载的页面有图标时
-                    if (!Objects.equals(icon, newIcon)) {  //避免在渲染页面过程中重复加载相同图标
+                        }
+                    } else if (!Objects.equals(url, newUrl) && !Objects.equals(webHistoryItem.getTitle(), null)) {
+                        //新加载的图片无图标，则当url发生变化和标题加载完成时，增加历史记录
                         History history = new History();
-                        history.setIcon(newIcon);
+                        history.setIcon("defaultIcon");
                         history.setTitle(webHistoryItem.getTitle());
                         history.setUrl(webHistoryItem.getOriginalUrl());
                         history.setTime(GetTimeUtil.getNowTimeString());
@@ -114,26 +162,9 @@ public class BrowseActivity extends AppCompatActivity implements View.OnClickLis
                         }
                         historyDao.addHistory(history);
                         //更新判断条件
-                        icon = newIcon;
+                        icon = "defaultIcon";
                         url = newUrl;
-
                     }
-                } else if (!Objects.equals(url, newUrl) && !Objects.equals(webHistoryItem.getTitle(), null)) {
-                    //新加载的图片无图标，则当url发生变化和标题加载完成时，增加历史记录
-                    History history = new History();
-                    history.setIcon("defaultIcon");
-                    history.setTitle(webHistoryItem.getTitle());
-                    history.setUrl(webHistoryItem.getOriginalUrl());
-                    history.setTime(GetTimeUtil.getNowTimeString());
-                    //如果该网址有当天的访问记录，则先删除再添加，使历史记录排在后面
-                    int queryId = historyDao.queryId(history.getUrl(), history.getTime());
-                    if (queryId != -1) {
-                        historyDao.deleteHistoryById(queryId);
-                    }
-                    historyDao.addHistory(history);
-                    //更新判断条件
-                    icon = "defaultIcon";
-                    url = newUrl;
                 }
             }
         });
@@ -178,10 +209,10 @@ public class BrowseActivity extends AppCompatActivity implements View.OnClickLis
 
     // 初始化底部导航栏按钮
     public void initView() {
-        rb_go_back = (RadioButton) findViewById(R.id.rb_go_back);
-        rb_go = (RadioButton) findViewById(R.id.rb_go);
-        rb_menu = (RadioButton) findViewById(R.id.rb_menu);
-        rb_home = (RadioButton) findViewById(R.id.rb_home);
+        RadioButton rb_go_back = (RadioButton) findViewById(R.id.rb_go_back);
+        RadioButton rb_go = (RadioButton) findViewById(R.id.rb_go);
+        RadioButton rb_menu = (RadioButton) findViewById(R.id.rb_menu);
+        RadioButton rb_home = (RadioButton) findViewById(R.id.rb_home);
 
         rb_go_back.setOnClickListener(this);
         rb_go.setOnClickListener(this);
@@ -251,7 +282,7 @@ public class BrowseActivity extends AppCompatActivity implements View.OnClickLis
     // 显示弹出菜单栏
     public void showPopWindow() {
         // 初始化界面
-        view = LayoutInflater.from(BrowseActivity.this).inflate(R.layout.menubar, null);
+        View view = LayoutInflater.from(BrowseActivity.this).inflate(R.layout.menubar, null);
         popupWindow = new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
         popupWindow.setContentView(view);
 
