@@ -1,6 +1,7 @@
 package com.hailing.webapp.util;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -18,12 +19,14 @@ public class UrlUtil {
      * @param keyword
      * @return
      */
-    public static String converKeywordLoadOrSearch(String keyword) {
+    public static String convertKeywordLoadOrSearch(String keyword) {
 
-        int point = getCount(keyword, ".");
+        String convertUrl;
 
-        if (!Objects.equals(keyword, null)) {
+        if (!Objects.equals(keyword, "")) {
             keyword = keyword.trim();
+            int point = getCount(keyword, ".");
+            String[] strArr = keyword.split("\\.");
 
             if (keyword.startsWith("www.")) {
                 keyword = HTTP + keyword;
@@ -31,40 +34,35 @@ public class UrlUtil {
                 keyword = "ftp://" + keyword;
             }
 
+            //是否为有效访问地址
+            boolean validURL = (keyword.startsWith("ftp://") || keyword.startsWith(FILE)
+                    || keyword.startsWith(HTTP) || keyword.startsWith(HTTPS));
 
             //是否为IP地址
-            boolean isIPAddress = (TextUtils.isDigitsOnly(keyword.replace(".", ""))
-                    && point == 3 && !keyword.contains(" "));
-            if (isIPAddress) {
-                keyword = HTTP + keyword;
-            }
+            boolean isIpAddress = (point == 3 && !Objects.equals(strArr[0], "")
+                    && strArr.length == 4
+                    && TextUtils.isDigitsOnly(keyword.replace(".", "")));
 
-            //是否为有效访问地址
-            boolean validURL = (keyword.startsWith("ftp://") || keyword.startsWith(HTTP)
-                    || keyword.startsWith(FILE) || keyword.startsWith(HTTPS))
-                    || isIPAddress;
+            //是否为域名
+            boolean isDomainName = (strArr.length == (point + 1) && strArr[strArr.length - 1].length() > 1
+                    && !Objects.equals(strArr[0], "") && strArr.length != 1);
 
-
-            //字符串包含空格，最后的“.”后不接字符串或接的字符串长度不大于2，则为搜索内容
-            String[] strArr = keyword.split("\\.");
-            boolean isSearch = keyword.contains(" ")
-                    || (strArr.length != (point + 1) || strArr[strArr.length - 1].length() > 1) && !isIPAddress && !validURL;
-
-
-            String converUrl;
-            if (isSearch) {
+            if (validURL) {
+                convertUrl = keyword;
+            } else if (isIpAddress) {
+                convertUrl = HTTP + keyword;
+            } else if (isDomainName) {
+                convertUrl = HTTP + keyword;
+            } else {
                 try {
                     keyword = URLEncoder.encode(keyword, "UTF-8");
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
-                converUrl = "https://cn.bing.com/search?q=" + keyword + "&ie=UTF-8";
-            } else if (!validURL) {
-                converUrl = HTTP + keyword;
-            } else {
-                converUrl = keyword;
+                convertUrl = "https://cn.bing.com/search?q=" + keyword;
             }
-            return converUrl;
+            Log.d("url", convertUrl);
+            return convertUrl;
         } else {
             return "";
         }

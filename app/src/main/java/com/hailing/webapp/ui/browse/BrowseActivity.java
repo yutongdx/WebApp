@@ -99,8 +99,12 @@ public class BrowseActivity extends AppCompatActivity implements View.OnClickLis
         homeGoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                url = UrlUtil.converKeywordLoadOrSearch(search.getText().toString());
-                webView.loadUrl(url);
+                url = UrlUtil.convertKeywordLoadOrSearch(search.getText().toString());
+                if (Objects.equals(url, "")) {
+                    Toast.makeText(v.getContext(), "暂未输入", Toast.LENGTH_SHORT).show();
+                } else {
+                    webView.loadUrl(url);
+                }
             }
         });
 
