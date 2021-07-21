@@ -1,7 +1,9 @@
 package com.hailing.webapp.ui.browse;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Picture;
 import android.graphics.Rect;
@@ -24,7 +26,6 @@ import android.widget.RadioButton;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -46,6 +47,7 @@ public class BrowseActivity extends AppCompatActivity implements View.OnClickLis
 
     private SwipeRefreshLayout swipeRefresh;
     private RefreshWebView webView;
+    private ProgressDialog progressDialog;
     private String fromTag;
     private String icon;
     private String url;
@@ -66,11 +68,11 @@ public class BrowseActivity extends AppCompatActivity implements View.OnClickLis
         // 初始化布局
         initView();
 
-        //隐藏主题顶部标题栏
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.hide();
-        }
+        //设置加载提示窗口
+        progressDialog = new ProgressDialog(BrowseActivity.this);
+        progressDialog.setTitle("网页加载中");
+        progressDialog.setMessage(" Loading...");
+        progressDialog.setCancelable(true);
 
         //获取数据库引用
         bookMarkDao = new BookMarkDao(this);
@@ -101,7 +103,7 @@ public class BrowseActivity extends AppCompatActivity implements View.OnClickLis
             public void onClick(View v) {
                 url = UrlUtil.convertKeywordLoadOrSearch(search.getText().toString());
                 if (Objects.equals(url, "")) {
-                    Toast.makeText(v.getContext(), "暂未输入", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(BrowseActivity.this, "暂未输入", Toast.LENGTH_SHORT).show();
                 } else {
                     webView.loadUrl(url);
                 }
@@ -117,7 +119,7 @@ public class BrowseActivity extends AppCompatActivity implements View.OnClickLis
         Intent intent = getIntent();
         fromTag = intent.getStringExtra("fromTag");
         url = intent.getStringExtra("url");
-        webView.loadUrl(url);  //打开首页点击的网页
+        webView.loadUrl(url); //打开首页点击的网页
 
         //监听网页图标更新即访问新页面时，增加历史记录
         webView.setPictureListener(new WebView.PictureListener() {
@@ -193,7 +195,20 @@ public class BrowseActivity extends AppCompatActivity implements View.OnClickLis
                 webView.loadUrl(url);
                 return true;
             }
+
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                progressDialog.show();
+                super.onPageStarted(view, url, favicon);
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                progressDialog.dismiss();
+                super.onLoadResource(view, url);
+            }
         });
+
     }
 
     //用于传入指定的参数来启动BrowseActivity
@@ -250,6 +265,7 @@ public class BrowseActivity extends AppCompatActivity implements View.OnClickLis
                 break;
             // 此处添加回到主页代码
             case R.id.rb_home:
+                popupWindow.dismiss();
                 MainActivity.actionStart(this, "BrowseActivity", "homeFragment");
                 finish();
                 break;
@@ -268,11 +284,13 @@ public class BrowseActivity extends AppCompatActivity implements View.OnClickLis
                 break;
             // 此处为显示书签列表代码
             case R.id.rb_bookmark:
+                popupWindow.dismiss();
                 MainActivity.actionStart(this, webView.getOriginalUrl(), "bookmarkFragment");
                 finish();
                 break;
             // 此处为显示历史记录代码
             case R.id.rb_history:
+                popupWindow.dismiss();
                 MainActivity.actionStart(this, webView.getOriginalUrl(), "historyFragment");
                 finish();
                 break;
