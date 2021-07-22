@@ -1,17 +1,17 @@
 package com.hailing.webapp.util;
 
-import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 public class UrlUtil {
 
-    public static final String HTTP = "http://";
-    public static final String HTTPS = "https://";
-    public static final String FILE = "file://";
+    private static final String HTTP = "http://";
+    private static final String HTTPS = "https://";
+    private static final String FILE = "file://";
 
     /**
      * 将关键字转换成最后转换的url
@@ -22,11 +22,12 @@ public class UrlUtil {
     public static String convertKeywordLoadOrSearch(String keyword) {
 
         String convertUrl;
+        String IP_ADDRESS_PATTERN = "^((25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))[.]){3}(25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))$";
+        String DOMAIN_NAME_PATTERN = "^((?!-)\\w{1,63}(?<!-)[.])+[A-Za-z]{2,6}$";
+        Pattern pattern;
 
         if (!Objects.equals(keyword, "")) {
             keyword = keyword.trim();
-            int point = getCount(keyword, ".");
-            String[] strArr = keyword.split("\\.");
 
             if (keyword.startsWith("www.")) {
                 keyword = HTTP + keyword;
@@ -39,13 +40,12 @@ public class UrlUtil {
                     || keyword.startsWith(HTTP) || keyword.startsWith(HTTPS));
 
             //是否为IP地址
-            boolean isIpAddress = (point == 3 && !Objects.equals(strArr[0], "")
-                    && strArr.length == 4
-                    && TextUtils.isDigitsOnly(keyword.replace(".", "")));
+            pattern = Pattern.compile(IP_ADDRESS_PATTERN);
+            boolean isIpAddress = pattern.matcher(keyword).matches();
 
             //是否为域名
-            boolean isDomainName = (strArr.length == (point + 1) && strArr[strArr.length - 1].length() > 1
-                    && !Objects.equals(strArr[0], "") && strArr.length != 1);
+            pattern = Pattern.compile(DOMAIN_NAME_PATTERN);
+            boolean isDomainName = pattern.matcher(keyword).matches();
 
             if (validURL) {
                 convertUrl = keyword;
