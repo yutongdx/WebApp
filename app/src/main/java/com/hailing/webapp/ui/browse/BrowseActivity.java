@@ -78,23 +78,6 @@ public class BrowseActivity extends AppCompatActivity implements View.OnClickLis
         bookMarkDao = new BookMarkDao(this);
         historyDao = new HistoryDao(this);
 
-        //下拉刷新
-        swipeRefresh = (SwipeRefreshLayout)findViewById(R.id.browse_swipeRefresh);
-        swipeRefresh.setColorSchemeResources(R.color.design_default_color_primary);
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                webView.loadUrl(url);
-                swipeRefresh.setRefreshing(false);
-            }
-        });
-        swipeRefresh.setOnChildScrollUpCallback(new SwipeRefreshLayout.OnChildScrollUpCallback() {
-            @Override
-            public boolean canChildScrollUp(SwipeRefreshLayout parent, @Nullable View child) {
-                return webView.getScrollY()>0;
-            }
-        });
-
         //顶部搜索
         EditText search = (EditText)findViewById(R.id.browse_search);
         Button homeGoto = (Button)findViewById(R.id.browse_goto);
@@ -110,6 +93,25 @@ public class BrowseActivity extends AppCompatActivity implements View.OnClickLis
             }
         });
 
+        //下拉刷新
+        swipeRefresh = (SwipeRefreshLayout)findViewById(R.id.browse_swipeRefresh);
+        swipeRefresh.setColorSchemeResources(R.color.design_default_color_primary);
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                search.setText("");
+                webView.loadUrl(url);
+                swipeRefresh.setRefreshing(false);
+            }
+        });
+        swipeRefresh.setOnChildScrollUpCallback(new SwipeRefreshLayout.OnChildScrollUpCallback() {
+            @Override
+            public boolean canChildScrollUp(SwipeRefreshLayout parent, @Nullable View child) {
+                return webView.getScrollY()>0;
+            }
+        });
+
+        //WebView网页设置
         webView = findViewById(R.id.browse_web_view);
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);   //设定webView允许使用JavaScript
@@ -204,6 +206,7 @@ public class BrowseActivity extends AppCompatActivity implements View.OnClickLis
 
             @Override
             public void onPageFinished(WebView view, String url) {
+                search.setText("");
                 progressDialog.dismiss();
                 super.onLoadResource(view, url);
             }
@@ -265,7 +268,6 @@ public class BrowseActivity extends AppCompatActivity implements View.OnClickLis
                 break;
             // 此处添加回到主页代码
             case R.id.rb_home:
-                popupWindow.dismiss();
                 MainActivity.actionStart(this, "BrowseActivity", "homeFragment");
                 finish();
                 break;

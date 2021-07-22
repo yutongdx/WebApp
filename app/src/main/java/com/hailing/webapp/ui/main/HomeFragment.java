@@ -67,24 +67,6 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        //下拉刷新
-        swipeRefresh = (SwipeRefreshLayout)view.findViewById(R.id.home_swipeRefresh);
-        swipeRefresh.setColorSchemeResources(R.color.design_default_color_primary);
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                webView.loadUrl("https://cn.bing.com/");
-                swipeRefresh.setRefreshing(false);
-            }
-        });
-        swipeRefresh.setOnChildScrollUpCallback(new SwipeRefreshLayout.OnChildScrollUpCallback() {
-            @Override
-            public boolean canChildScrollUp(SwipeRefreshLayout parent, @Nullable View child) {
-                return webView.getScrollY()>0;
-            }
-        });
-
-
         //顶部搜索
         EditText search = (EditText)view.findViewById(R.id.home_search);
         Button homeGoto = (Button)view.findViewById(R.id.home_goto);
@@ -97,6 +79,24 @@ public class HomeFragment extends Fragment {
                 } else {
                     BrowseActivity.actionStart(getActivity(), "homeFragment", url);
                 }
+            }
+        });
+
+        //下拉刷新
+        swipeRefresh = (SwipeRefreshLayout)view.findViewById(R.id.home_swipeRefresh);
+        swipeRefresh.setColorSchemeResources(R.color.design_default_color_primary);
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                search.setText("");
+                webView.loadUrl("https://cn.bing.com/");
+                swipeRefresh.setRefreshing(false);
+            }
+        });
+        swipeRefresh.setOnChildScrollUpCallback(new SwipeRefreshLayout.OnChildScrollUpCallback() {
+            @Override
+            public boolean canChildScrollUp(SwipeRefreshLayout parent, @Nullable View child) {
+                return webView.getScrollY()>0;
             }
         });
 
