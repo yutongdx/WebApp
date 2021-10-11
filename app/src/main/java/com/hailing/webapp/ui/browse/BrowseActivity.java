@@ -116,6 +116,8 @@ public class BrowseActivity extends AppCompatActivity implements View.OnClickLis
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);   //设定webView允许使用JavaScript
         webSettings.setSupportZoom(true);      //设定webView允许使用缩放手势
+        webSettings.setBuiltInZoomControls(true);
+        webSettings.setDisplayZoomControls(false);
         webSettings.setLoadWithOverviewMode(true);  //设定webView以概述模式加载页面
 
         Intent intent = getIntent();
