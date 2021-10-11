@@ -28,14 +28,11 @@ public class RefreshWebView extends WebView {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        switch (event.getAction()){
-            case MotionEvent.ACTION_DOWN:
-                if(this.getScrollY() <= 0)
-                { this.scrollTo(0,1);}
-                break;
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            if (this.getScrollY() <= 0) {
+                this.scrollTo(0, 1);
+            }
         }
         return super.onTouchEvent(event);
     }
-
-
 }

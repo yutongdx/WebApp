@@ -38,6 +38,9 @@ public class HomeFragment extends Fragment {
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);   //设定webView允许使用JavaScript
         webSettings.setSupportZoom(true);      //设定webView允许使用缩放手势
+        webSettings.setBuiltInZoomControls(true);
+        webSettings.setDisplayZoomControls(false);
+
         webSettings.setAppCacheEnabled(true);
         webSettings.setLoadWithOverviewMode(true);  //设定webView以概述模式加载页面
         webView.loadUrl("https://cn.bing.com/");  //主页加载必应首页
