@@ -8,7 +8,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.RadioButton;
@@ -213,8 +212,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             toTag = intent.getStringExtra("toTag");
             this.switchFragment(toTag);
         }
-        Log.d("jump", "from:" + fromTag);
-        Log.d("jump","to:" + toTag);
+
     }
 
 }
